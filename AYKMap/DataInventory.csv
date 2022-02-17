@@ -1,0 +1,31 @@
+region,productivity_index,productivity_name_long,productivity,asl_yrs,asl,yrs_data,Harvest,Weir,Aerial,Sonar,long,lat,location_notes,first_brood_year,last_brood_year,productivity_ref
+Yukon US,Andreafsky_EF,East Fork Andreafsky River,Yes,,,,,,,,-162.801,62.14938,Lower Yukon near St. Marys,1994,2010,"Siegel 2017, Brown et al. 2020"
+Kuskokwim,Aniak,Aniak River,Yes,0,No,28,,Yes,Yes,No,-159.3392118,61.4454547,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Yukon CDN,Carmacks,Carmacks area,Yes,,,,,,,,-136.30123,62.10214,Canadian Yukon,1982,2009,Connors et al. 2020
+Yukon US,Chena,Chena River,Yes,,,,,,,,-147.276,64.82395,Tanana drainage,1986,2015,"Evenson 2002, Joy et al. in review"
+Kuskokwim,George,George River,Yes,21,Yes,19,,Yes,No,No,-157.694,61.91879,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Yukon US,Gisasa,Gisasa River,Yes,,,,,,,,-157.751,65.23725,Koyukuk drainage,1995,2010,Brown et al. 2020
+Kuskokwim,Goodnews,Goodnews River,Yes,,,,,,,,-160.612,59.15992,Drains into Kuskokwim Bay,1981,2015,"Molyneaux and Brannian 2006, ADF&G unpublished, KNB https://knb.ecoinformatics.org/view/urn:uuid:5bf24b80-4910-4625-881d-02a98d5b1ebe"
+Kuskokwim,Holitna,Holitna River,Yes,0,No,21,,,Yes,No,-157.254064,61.1400492,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Kuskokwim,Holokuk,Holokuk River,Yes,0,No,16,,,Yes,No,-158.3765757,61.4088549,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Kuskokwim,Kisaralik,Kisaralik River,Yes,0,No,24,,,Yes,No,-159.594044,60.3412698,Lower Kuskokwim River,1976,2010,Staton et al. 2020
+Kuskokwim,Kogrukluk,Kogrukluk River,Yes,40,Yes,32,,Yes,Yes,No,-157.853,60.8481,Middle Kuskokwim River,1976,2010,"Siegel 2017, Staton et al. 2020"
+Kuskokwim,Kuskokwim,Kuskokwim River,Yes,,,,,,,,-160.996105,61.100367,,1976,2013,Larson 2021
+Kuskokwim,Kwethluk,Kwethluk River,Yes,18,Yes,14,,Yes,Yes,No,-160.853,60.32648,Lower Kuskokwim River,1976,2010,"Boersma et al 2019, Staton et al. 2020"
+Kuskokwim,Oskawalik,Oskawalik River,Yes,0,No,21,,,Yes,No,-158.0474591,61.7213263,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Yukon CDN,Pelly,Pelly River,Yes,,,,,,,,-133.217,62.17778,Canadian Yukon,1982,2009,Connors et al. 2020
+Kuskokwim,Pitka,Pitka Fork,Yes,0,No,17,,,Yes,No,-154.5069846,62.8883491,Upper Kuskokwim River,1976,2010,Staton et al. 2020
+Yukon US,Salcha,Salcha River,Yes,,,,,,,,-146.679,64.48254,Tanana drainage,1987,2015,"Evenson 2002, Joy et al. in review"
+Yukon CDN,Stewart,Stewart River,Yes,,,,,,,,-137.44255,63.55385,Canadian Yukon,1982,2009,Connors et al. 2020
+Kuskokwim,Swift,Swift River,Yes,0,No,27,,,Yes,No,-156.0122478,61.81476,Middle Kuskokwim River,1976,2010,Staton et al. 2020
+Kuskokwim,Takotna,Takotna River,Yes,13,Yes,17,,Yes,No,No,-155.601,62.96417,Upper Kuskokwim River,1976,2010,Staton et al. 2020
+Kuskokwim,Tatlawiksuk,Tatlawiksuk River,Yes,19,Yes,18,,Yes,No,No,-156.243,61.91917,Upper Kuskokwim River,1976,2010,Staton et al. 2020
+Yukon CDN,Teslin,Teslin River,Yes,,,,,,,,-134.89504,61.56791,Canadian Yukon,1982,2009,Connors et al. 2020
+Kuskokwim,Tuluksak,Tuluksak River,Yes,21,Yes,21,,Yes,Yes,No,-160.55,60.9869,Lower Kuskokwim River,1976,2010,Staton et al. 2020
+Norton Sound,Unalakleet,Unalakleet River,Yes,,,,,,,,-160.490167,63.888667,,1985,2005,"Spaeder and Catalano 2012, Schindler et al. 2013, KNB https://knb.ecoinformatics.org/view/urn:uuid:5bf24b80-4910-4625-881d-02a98d5b1ebe"
+Yukon CDN,W.Donjek,White and Donjek Rivers,Yes,,,,,,,,-139.4817,62.46299,Canadian Yukon,1982,2009,Connors et al. 2020
+Yukon US + CDN,Yukon,Yukon River,Yes,,,,,,,,,,,2002,2011,Howard et al. 2020
+Yukon CDN,Yukon_CDN,Canadian Yukon River,Yes,,,,,,,,-141.043735,64.772477,ADFG's Eagle sonar and test netting site (near Canadian border),1982,2012,JTC 2021
+Yukon CDN,Yukon_CDN_L.Mstm,Canadian Yukon River lower mainstem,Yes,,,,,,,,-139.3263263,63.7494814,Canadian Yukon,1982,2009,Connors et al. 2020
+Yukon CDN,Yukon_CDN_M.Mstm,Canadian Yukon River middle mainstem,Yes,,,,,,,,-138.5023342,63.041892,Canadian Yukon,1982,2009,Connors et al. 2020
+Yukon CDN,Yukon_CDN_U.Mstm,Canadian Yukon River upper mainstem and lakes,Yes,,,,,,,,-135.1588767,61.3785529,Canadian Yukon,1982,2009,Connors et al. 2020

@@ -1,0 +1,56 @@
+---
+title: "Arctic-Yukon-Kuskokwim Data"
+author: "Megan Feddern"
+date: "Living Document"
+output:
+  html_document:
+    highlight: textmate
+    theme: readable
+    toc: yes
+    toc_depth: 5
+    toc_float: yes
+  pdf_document:
+    toc: yes
+    toc_depth: '5'
+
+---
+
+```{r libs, include=FALSE, echo=FALSE}
+library(utils)
+library(stats)
+library(utils)
+library(datasets)
+library(graphics)
+library(shiny)
+library(grDevices)
+library(methods)
+library(leaflet)
+library(dplyr)
+library(shinycssloaders)
+library(rgdal)
+library(plotly)
+library(htmltools)
+library(DT)
+library(shinyjs)
+library(shinythemes)
+library(rsconnect)
+library(crosstalk)
+
+
+data <- read.csv(file = 'DataInventory.csv')
+
+```
+
+```{r crosstalk, include=FALSE, echo=FALSE}
+# Wrap data frame in SharedData
+sd <-SharedData$new(data)
+# Create a filter input
+filter_slider("asl", "Age Data:", sd, column=~asl, step=0.1, width=250)
+
+# Use SharedData like a dataframe with Crosstalk-enabled widgets
+bscols(
+  leaflet(sd) %>% addTiles() %>% addMarkers(),
+  datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="100%",
+    options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
+)
+```
