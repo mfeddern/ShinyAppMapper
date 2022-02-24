@@ -1,4 +1,4 @@
-region,productivity_index,productivity_name_long,productivity,asl,yrs_data,Harvest,Data Type,long,lat,location_notes,first_brood_year,last_brood_year,productivity_ref,Weir,Aerial,Genetic,Sonar,asl_yrs,Tower
+region,productivity_index,productivity_name_long,productivity,asl,yrs_data,Harvest,Data Type,long,lat,location_notes,first_brood_year,last_brood_year,source,Weir,Aerial,Genetic,Sonar,asl_yrs,Tower
 Yukon US,Andreafsky_EF,East Fork Andreafsky River,Yes,Yes,22,,weir,-162.801,62.14938,Lower Yukon near St. Marys,1994,2010,"Siegel 2017, Brown et al. 2020",Yes,No,No,No,22,No
 Kuskokwim,Aniak,Aniak River,Yes,No,28,,"weir, aerial",-159.3392118,61.4454547,Middle Kuskokwim River,1976,2010,Staton et al. 2020,Yes,Yes,No,No,0,No
 Yukon US,Chena,Chena River,Yes,Yes,30,,"counting tower, sonar, mark recapture",-147.276,64.82395,Tanana drainage,1986,2015,"Evenson 2002, Joy et al. in review",No,No,No,Yes,30,Yes
