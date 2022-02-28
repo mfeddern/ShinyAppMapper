@@ -24,36 +24,46 @@ ui = fluidPage(theme = shinytheme("flatly"),
     sidebarPanel(  
       h1("Query Data"),
       br(),
-      strong("Data Type:"),
-      br(),
       
-      checkboxInput(inputId = "Weir.check", label = "Weir", value = FALSE),
-      checkboxInput(inputId = "Aerial.check", label = "Aerial", value = FALSE),
-      checkboxInput(inputId = "Sonar.check", label = "Sonar", value = FALSE),
-      checkboxInput(inputId = "Tower.check", label = "Counting Tower", value = FALSE),
-      checkboxInput(inputId = "Genetic.check", label = "Genetic", value = FALSE),
+      radioButtons(inputId = "Management_Area", #radio button for whether there is ASL data
+                   label= "Management Area:",
+                   c("Yukon (US)" = "Yukon (US)",
+                     "Yukon (CA)" = "Yukon (CA)",
+                     "Kuskokwim" = "Kuskokwim",
+                     "Norton Sound" = "Norton Sound",
+                     "Kotzebue" = "Kotzebue",
+                     "All Areas" = "All"),
+                   selected="All"),
       
-  radioButtons(inputId = "ASL", #radio button for whether there is ASL data
-               label= "Age Data:",
-               c("Yes" = "Yes",
-                 "No" = "No",
+  radioButtons(inputId = "Project_Type", #radio button for whether there is ASL data
+               label= "Survey Type:",
+               c("Escapement Counts" = "Escapement Counts",
+                 "Aerial Survey" = "Aerial Survey",
                  "All Data" = "All"),
                selected="All"),
-  
-  radioButtons(inputId = "Productivity", #radio button for whether there is productivity index
-               label= "Productivity Data:",
-               choices= c("Yes" = "Yes",
-                 "No" = "No",
-                 "All Data" = "All"),
-               selected="All"),
-  
  
  
-   sliderInput("n_years", #radio button for the minimum number of escapement observations
-              "Minimum Number of Years of Escapement Observations:",
+   sliderInput("Number_of_Years", #slider for the minimum number of escapement observations
+              "Minimum Number of Years of Survey Observations:",
               min = 0,
-              max = 30,
+              max = 60,
+              step=1,
+              value = 1),
+  
+  sliderInput("Avg_Count", #radio button for the minimum escapement size
+              "Minimum Average Return:",
+              min = 0,
+              max = 5000,
+              step= 20,
+              value = 20),
+  
+  sliderInput("Min_ASL", #radio button for the minimum escapement size
+              "Minimum Number of Years for ASL Data:",
+              min = 0,
+              max = 60,
+              step= 1,
               value = 0),
+  
   actionButton(
     "select_all_rows_button",
     "View Selection on Map"

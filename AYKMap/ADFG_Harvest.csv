@@ -1,0 +1,41 @@
+﻿Region,District,Project_Type,Min_Year,Max_Year,Number_of_Years,Min_Count,Max_Count,Avg_Count
+Kotzebue,Kotzebue,Commercial Harvest (Post-1985),1985,2005,19,1,116,15
+Norton Sound,NS Subdistrict 1,Commercial Harvest (Post-1985),1985,2017,8,1,21,5
+Norton Sound,NS Subdistrict 2,Commercial Harvest (Post-1985),1985,2015,14,1,193,55
+Norton Sound,NS Subdistrict 3,Commercial Harvest (Post-1985),1985,2015,19,1,844,142
+Norton Sound,NS Subdistrict 4,Commercial Harvest (Post-1985),1985,2015,11,4,544,217
+Norton Sound,NS Subdistrict 5,Commercial Harvest (Post-1985),1985,2011,25,1,5312,1045
+Norton Sound,NS Subdistrict 6,Commercial Harvest (Post-1985),1985,2011,25,4,12621,3241
+Kuskokwim,W1 - Kuskokwim River,Commercial Harvest (Post-1985),1985,2020,29,1,40390,4958
+Kuskokwim,W2 - Kuskokwim River,Commercial Harvest (Post-1985),1985,1998,14,1,2792,1135
+Kuskokwim,W4 - Kanektok (Kuskokwim Bay),Commercial Harvest (Post-1985),1985,2015,28,61,38584,17813
+Kuskokwim,W5 - Goodnews Bay (Kuskokwim Bay),Commercial Harvest (Post-1985),1985,2010,26,22,5793,2535
+Yukon (US),Y1 - Yukon River,Commercial Harvest (Post-1985),1985,2020,30,3,25128,4431
+Yukon (US),Y2 - Yukon River,Commercial Harvest (Post-1985),1985,2020,29,22,18584,4934
+Yukon (US),Y3 - Yukon River,Commercial Harvest (Post-1985),1985,2007,13,22,2128,923
+Yukon (US),Y4 - Yukon River,Commercial Harvest (Post-1985),1985,2003,15,11,2684,671
+Yukon (US),Y5 - Yukon River,Commercial Harvest (Post-1985),1985,2007,21,56,2119,833
+Yukon (US),Y6 - Tanana River (Yukon River),Commercial Harvest (Post-1985),1985,2007,21,15,1542,408
+Kotzebue,Kotzebue,Commercial Harvest (Pre-1985),1969,1984,14,1,227,74
+Norton Sound,NS Subdistrict 1,Commercial Harvest (Pre-1985),1970,1984,15,2,67,19
+Norton Sound,NS Subdistrict 2,Commercial Harvest (Pre-1985),1969,1984,16,12,76,37
+Norton Sound,NS Subdistrict 3,Commercial Harvest (Pre-1985),1969,1983,15,16,1046,241
+Norton Sound,NS Subdistrict 4,Commercial Harvest (Pre-1985),1969,1983,13,8,898,193
+Norton Sound,NS Subdistrict 5,Commercial Harvest (Pre-1985),1969,1984,16,34,2742,1086
+Norton Sound,NS Subdistrict 6,Commercial Harvest (Pre-1985),1969,1984,16,1212,7663,3719
+Kuskokwim,W1 - Kuskokwim River,Commercial Harvest (Pre-1985),1969,1984,16,4135,45798,32399
+Kuskokwim,W2 - Kuskokwim River,Commercial Harvest (Pre-1985),1969,1984,16,747,5271,2236
+Kuskokwim,W4 - Kanektok (Kuskokwim Bay),Commercial Harvest (Pre-1985),1969,1984,16,2443,46382,16804
+Kuskokwim,W5 - Goodnews Bay (Kuskokwim Bay),Commercial Harvest (Pre-1985),1969,1984,16,264,14113,4652
+Yukon (US),Y1 - Yukon River,Commercial Harvest (Pre-1985),1969,1984,16,44583,99506,72382
+Yukon (US),Y2 - Yukon River,Commercial Harvest (Pre-1985),1969,1984,16,11315,50004,27102
+Yukon (US),Y3 - Yukon River,Commercial Harvest (Pre-1985),1969,1984,16,2609,5240,3789
+Yukon (US),Y4 - Yukon River,Commercial Harvest (Pre-1985),1969,1984,16,389,1989,1117
+Yukon (US),Y5 - Yukon River,Commercial Harvest (Pre-1985),1974,1984,11,2663,6374,3931
+Yukon (US),Y6 - Tanana River (Yukon River),Commercial Harvest (Pre-1985),1974,1984,11,500,1947,1013
+Yukon (US),Yukon Coastal District 1,Subsistence Harvest,1992,2020,29,1356,10408,5287
+Yukon (US),Yukon Coastal District 2,Subsistence Harvest,1992,2020,29,616,13442,7573
+Yukon (US),Yukon Coastal District 3,Subsistence Harvest,1992,2020,29,48,7715,4043
+Yukon (US),Yukon Coastal District 4,Subsistence Harvest,1992,2020,29,132,16269,9360
+Yukon (US),Yukon Coastal District 5,Subsistence Harvest,1992,2020,29,288,21365,12913
+Yukon (US),Yukon Coastal District 6,Subsistence Harvest,1992,2020,29,283,2712,1301

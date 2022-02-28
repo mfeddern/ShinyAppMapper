@@ -1,21 +1,19 @@
 ---
-title: "Arctic-Yukon-Kuskokwim Data"
-author: "Megan Feddern"
-date: "Living Document"
+title: 
+author: 
+date: 
 output:
   html_document:
     highlight: textmate
     theme: readable
     toc: yes
-    toc_depth: 5
-    toc_float: yes
-  pdf_document:
-    toc: yes
-    toc_depth: '5'
-
+    toc_depth: 1
+   # toc_float: yes
+runtime: shiny
 ---
 
 ```{r libs, include=FALSE, echo=FALSE}
+
 library(utils)
 library(stats)
 library(utils)
@@ -34,23 +32,497 @@ library(DT)
 library(shinyjs)
 library(shinythemes)
 library(rsconnect)
-library(crosstalk)
+library(tidyr)
+library(tidyverse)
 
 
-data <- read.csv(file = 'DataInventory.csv')
+
+data1<- read.csv(file = 'ADFGDataSummary.csv')   #aerial survey and escapement dataset
+data2<- read.csv(file = 'ADFG_ASL.csv')         # ASL data set
+data <- left_join(data1, data2[,3:10], by = "Location", all= FALSE)%>% #merging dataset
+          filter_at(vars(First_Year,Last_Year),all_vars(!is.na(.)))   # only keeping ASL data that has accompanying survey data
+
 
 ```
 
-```{r crosstalk, include=FALSE, echo=FALSE}
-# Wrap data frame in SharedData
-sd <-SharedData$new(data)
-# Create a filter input
-filter_slider("asl", "Age Data:", sd, column=~asl, step=0.1, width=250)
+## Chinook Salmon Data for the Arctic-Yukon-Kuskokwim Region {.tabset}
 
-# Use SharedData like a dataframe with Crosstalk-enabled widgets
-bscols(
-  leaflet(sd) %>% addTiles() %>% addMarkers(),
-  datatable(sd, extensions="Scroller", style="bootstrap", class="compact", width="100%",
-    options=list(deferRender=TRUE, scrollY=300, scroller=TRUE))
+### Survey Data
+Query data based on 1) Management Area, 2) Survey type, 3) number of years of return observations 4) average return size and 5) number of years of ASL observations. Once data has been queried, select "View Selection on Map" and the datasets will be plotted. Click on points to see more information regarding the data for that location.
+
+Detailed graphs of the overlap between ASL and return counts from escapement surveys can be viewed in the 'Dataset Overlap' tab.  
+
+```{r, echo=FALSE}
+shinyApp(
+ui = fluidPage(theme = shinytheme("flatly"),
+  sidebarLayout(
+    sidebarPanel(  
+      h3("Query Data"),
+      br(),
+      
+      radioButtons(inputId = "Management_Area", #radio button for whether there is ASL data
+                   label= "Management Area:",
+                   c("Yukon (US)" = "Yukon (US)",
+                     "Yukon (CA)" = "Yukon (CA)",
+                     "Kuskokwim" = "Kuskokwim",
+                     "Norton Sound" = "Norton Sound",
+                     "Kotzebue" = "Kotzebue",
+                     "All Areas" = "All"),
+                   selected="All"),
+      
+  radioButtons(inputId = "Project_Type", #radio button for whether there is ASL data
+               label= "Survey Type:",
+               c("Escapement Counts" = "Escapement Counts",
+                 "Aerial Survey" = "Aerial Survey",
+                 "All Data" = "All"),
+               selected="All"),
+ 
+ 
+   sliderInput("Number_of_Years", #slider for the minimum number of escapement observations
+              "Minimum Number of Years of Survey Observations:",
+              min = 0,
+              max = 60,
+              step=1,
+              value = 1),
+  
+  sliderInput("Avg_Count", #radio button for the minimum escapement size
+              "Minimum Average Return:",
+              min = 0,
+              max = 5000,
+              step= 20,
+              value = 20),
+  
+  sliderInput("Min_ASL", #radio button for the minimum escapement size
+              "Minimum Number of Years for ASL Data:",
+              min = 0,
+              max = 60,
+              step= 1,
+              value = 0),
+  
+  actionButton(
+    "select_all_rows_button",
+    "View Selection on Map"
+  ),
+  
+  actionButton(
+    "clear_rows_button",
+    "Clear Map Selection"
+    
+  )
+
+  
+    ),
+  
+  mainPanel(
+    h4("Map of Data"),
+        leafletOutput(
+          "my_leaflet"
+        ),
+    
+ 
+    h4("Data Inventory"),
+        DTOutput(
+          "my_datatable"
+        )
+      )
+    )
+  )
+,
+
+ server = function(session, input, output) {
+#Creating a reactive dataset that can be filtered by the slider and the radio buttons from the ui  
+  filtered_data <- reactive({ 
+   data <-  data %>%
+      filter(Number_of_Years >= input$Number_of_Years & 
+               Avg_Count >= input$Avg_Count &
+               Number_of_Years_ASL >= input$Min_ASL)  
+
+   
+   #assigning the correct filtering for management area 
+   if(input$Management_Area == "Yukon (US)"){
+     data <- data %>% filter(Management_Area == "Yukon")
+   }else{
+     if(input$Management_Area == "Yukon (CA)"){
+       data<-  data %>% filter(Management_Area == "Yukon - Canada")
+     }else{
+       if(input$Management_Area == "Kuskokwim"){
+         data<-  data %>% filter(Management_Area == "Kuskokwim")
+       }else{
+         if(input$Management_Area == "Kotzebue"){
+           data<-  data %>% filter(Management_Area == "Kotzebue")
+         }else{
+           if(input$Management_Area == "Norton Sound"){
+             data<-  data %>% filter(Management_Area == "Norton Sound/Port Clarence")
+             }else{
+               data
+             }
+           }
+         }
+       }
+     }
+   
+    #assigning the correct filtering for survey type  
+       if(input$Project_Type == "Escapement Counts"){
+          data <- data %>% filter(Project_Type == "Escapement")
+        }else{
+          if(input$Project_Type == "Aerial Survey"){
+           data<-  data %>% filter(Project_Type == "Aerial Survey")
+          }else{
+            data
+          }
+        }
+})
+  
+
+  #creating the output data table that will be filtered by the slider and the buttons  
+  output$my_datatable <- renderDT({
+    
+    filtered_data() %>% 
+       datatable( rownames = FALSE,  class = "display", fillContainer = T, 
+                  options = list( scrollX = TRUE, 
+                                 paging = FALSE))
+  })
+  
+  pal <- colorFactor(c("navy", "red"), domain = c("Escapement", "Aerial Survey"))  
+  # base map that we will add points to with leafletProxy(), using a proxy means the map does not need to be redrawn
+  output$my_leaflet <- renderLeaflet({
+    
+    leaflet() %>% 
+      addProviderTiles(
+        provider = providers$CartoDB.Positron,
+        options = providerTileOptions(
+          noWrap = FALSE
+        )
+      ) %>% 
+      setView(
+        lat = 62.8883491, #the map can zoom, but this is the default area it is centered on
+        lng = -160.5594136,
+        zoom = 4
+      )
+    
+  })
+  
+  #this initiates and event that allows selected rows in the data table to pop up on the map, using the "clear all" 
+  #and 'select all" action button initiated in the ui
+  
+  observeEvent(input$my_datatable_rows_selected, {
+    
+    selected_lats <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Latitude[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_longs <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Longitude[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_location <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Location[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_management <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Management_Area[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_type <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Project_Type[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_avg <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Avg_Count[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    selected_nyears <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Number_of_Years[c(unique(input$my_datatable_rows_selected))])
+    })
+    
+    
+    # this is the data that will be passed to the leaflet in the addCircleMarkers argument,
+    # as well as the popups when the points are hovered over
+    map_df <- reactive({
+      tibble(lat = unlist(selected_lats()),
+             lng = unlist(selected_longs()),
+             location = unlist(selected_location()),
+             management = unlist(selected_management()),
+             nyears = unlist(selected_nyears()),
+             average = unlist(selected_avg()),
+             type = unlist(selected_type()))
+    })
+    leafletProxy("my_leaflet", session) %>% 
+      clearMarkers() %>% 
+      addCircleMarkers(
+        data = map_df(),
+        lng = ~lng,
+        lat = ~lat,
+        stroke = TRUE,
+        color = ~pal(type),
+        radius = 1,
+        weight = ~nyears/2,
+        fillOpacity = 0.4,
+        popup = paste0("Name: ", map_df()$location, "<br>",
+                       "Region: ", map_df()$management, "<br>",
+                       "Data Type: ", map_df()$type, "<br>",
+                       "Average Return: ", map_df()$average, "<br>",
+                       "# Years of Escapement Data: ", map_df()$nyears)
+                       
+      )
+    
+  })
+  
+  # create a proxy to modify datatable without recreating it completely
+  DT_proxy <- dataTableProxy("my_datatable")
+  
+  # clear row selections when clear_rows_button is clicked
+  observeEvent(input$clear_rows_button, {
+    selectRows(DT_proxy, NULL)
+  })
+  
+  # clear markers from leaflet when clear_rows_button is clicked
+  observeEvent(input$clear_rows_button, {
+    clearMarkers(leafletProxy("my_leaflet", session))
+  })
+  
+  # select all rows when select_all_rows_button is clicked
+  observeEvent(input$select_all_rows_button, {
+    selectRows(DT_proxy, input$my_datatable_rows_all)
+  })
+  
+}
+,
+
+  options = list(height = 500)
 )
 ```
+
+**Note**: not all ASL data is included/assigned to a location in this dataset, only escapment ASL and ancillary ASL that could be assigned to a specific river was included. Aditional test fishing and harvest ASL is also available and is described in the "Detailed ASL" tab.
+
+### Dataset Overlap
+
+Temporal overlap in between escapement counts, aerial surveys, and ASL data for locations with escapement count. Age data includes both escapement ASL and ancillary age data. Weir, tower, sonar, and aerial survey data are plotted separately to identify overlaps and gear changes
+
+``````{r, echo=FALSE}
+data.plot <- read.csv(file = 'DataSumm_EscHarAge.csv')
+
+shinyApp(
+
+  ui = fluidPage(
+    selectInput("Region", "Region:",
+                choices = c('Yukon (CA)',
+                            'Yukon (US)',
+                            'Kuskokwim',
+                            'Norton Sound')),
+    plotOutput("detailedPlot")
+  ),
+
+  server = function(input, output) {
+    
+    filtered_data <- reactive({ 
+      data <-  data.plot %>%
+      filter(Region == input$Region) %>% 
+      gather(key= "DataType",value="Escapement",Age, Aerial.Survey, Escapement..weir., Escapement..tower., Escapement..sonar.)
+       
+    })
+    
+    output$detailedPlot = renderPlot({
+ggplot(data = filtered_data(), aes(x = Year,  y=DataType, size = Escapement, col=DataType)) + geom_point(alpha=0.7)+
+facet_wrap(~Location)+
+scale_size(range = c(2, 2), limits = c(0.5, 1.5))
+
+    })
+  },
+
+  options = list(height = 500)
+)
+```
+**Note**: Aerial survey data is inclusive of all years data is available from ADFG. Some aerial survey data displayed may be poorly rated, contain incomplete spatial coverage, or the spatial extent may vary between surveys. This shows what is available but not necessarily what will ultimately be "usable".
+
+Escapement data years that were marked as 'poor' in the ADFG website (i.e. more than 40% of run was missed) were omitted from this plot. Displayed escapement date should approximately represent what is 'usable'.
+
+ASL data includes both escapement ASL and ancillary ASL for a given escapement location.
+
+
+### Detailed ASL
+We show a scatter plot in this section.
+
+```{r, echo=FALSE}
+data.ASL <- read.csv(file = 'ADFG_ASL.csv')
+
+shinyApp(
+
+  ui = fluidPage(theme = shinytheme("flatly"),
+  sidebarLayout(
+    sidebarPanel(  
+      h3("Query Data"),
+      br(),
+      
+        sliderInput("Avg_Sampled_ASL", #slider for minimum number of individuals sampled
+              "Minimum Individuals Sampled:",
+              min = 0,
+              max = 1000,
+              step= 20,
+              value = 0),
+  
+  sliderInput("Number_of_Years_ASL", #slider for minimum number of years
+              "Minimum Number of Years for ASL Data:",
+              min = 0,
+              max = 60,
+              step= 1,
+              value = 0),
+  
+     radioButtons(inputId = "Management_Area", #radio button for whether there is ASL data
+                   label= "Management Area:",
+                   c("Yukon (US)" = "Yukon (US)",
+                     "Yukon (CA)" = "Yukon (CA)",
+                     "Kuskokwim" = "Kuskokwim",
+                     "Norton Sound" = "Norton Sound",
+                     "Kotzebue" = "Kotzebue",
+                     "All Areas" = "All"),
+                   selected="All")),
+     
+
+  mainPanel(    
+     DTOutput(
+          "my_datatable"
+        )
+  )
+  )
+  ),
+
+   server = function(input, output){
+    
+    filtered_data <- reactive({ 
+
+ data.ASL <-  data.ASL %>%
+      filter(Number_of_Years_ASL >= input$Number_of_Years_ASL & 
+               Avg_Sampled_ASL >= input$Avg_Sampled_ASL) 
+      
+   #assigning the correct filtering for management area 
+   if(input$Management_Area == "Yukon (US)"){
+     data.ASL<- data.ASL %>% filter(Management_Area == "Yukon")
+   }else{
+     if(input$Management_Area == "Yukon (CA)"){
+       data.ASL<-  data.ASL %>% filter(Management_Area == "Yukon - Canada")
+     }else{
+       if(input$Management_Area == "Kuskokwim"){
+         data.ASL<-  data.ASL %>% filter(Management_Area == "Kuskokwim")
+       }else{
+         if(input$Management_Area == "Kotzebue"){
+           data.ASL<-  data.ASL %>% filter(Management_Area == "Kotzebue")
+         }else{
+           if(input$Management_Area == "Norton Sound"){
+             data.ASL<-  data.ASL %>% filter(Management_Area == "Norton Sound/Port Clarence")
+             }else{
+               data.ASL
+             }
+           }
+         }
+       }
+     }
+    
+    })
+    
+     output$my_datatable <- renderDT({
+    
+    filtered_data() %>% 
+       datatable( rownames = FALSE,  class = "display", fillContainer = T, 
+                  options = list( scrollX = TRUE, 
+                                 paging = FALSE))
+  })
+})
+```
+
+### Detailed Harvest
+
+Harvest data for commercial and subsistence fisheries
+
+``````{r, echo=FALSE}
+data.har <- read.csv(file = 'ADFG_Harvest.csv')
+
+shinyApp(
+
+  ui = fluidPage(theme = shinytheme("flatly"),
+  sidebarLayout(
+    sidebarPanel(  
+      h3("Query Data"),
+      br(),
+     radioButtons(inputId = "Region", #radio button for whether there is ASL data
+                   label= "Region:",
+                   c("Yukon (US)" = "Yukon (US)",
+                     "Yukon (CA)" = "Yukon (CA)",
+                     "Kuskokwim" = "Kuskokwim",
+                     "Norton Sound" = "Norton Sound",
+                     "Kotzebue" = "Kotzebue",
+                     "All Areas" = "All Areas"),
+                   selected="All Areas"),
+     
+      radioButtons(inputId = "HarvestType", #radio button for whether there is ASL data
+                   label= "Harvest Type:",
+                   c("Commercial Harvest (Pre-1985)" = "Commercial Harvest (Pre-1985)",
+                     "Commercial Harvest (Post-1985)" = "Commercial Harvest (Post-1985)",
+                     "Subsistence" = "Subsistence",
+                     "All Types" = "All Types"),
+                   selected="All Types")),
+  mainPanel(    
+     DTOutput(
+          "my_datatable"
+        )
+  )
+  )
+  ),
+
+   server = function(input, output){
+    
+    filtered_data <- reactive({ 
+
+    #assigning the correct filtering for management area 
+    if(input$HarvestType == "Commercial Harvest (Post-1985)"){
+      data.har <- data.har %>% filter(Project_Type == "Commercial Harvest (Post-1985)")
+    }else{
+      if(input$HarvestType == "Commercial Harvest (Pre-1985)"){
+        data.har<-  data.har %>% filter(Project_Type == "Commercial Harvest (Pre-1985)")
+      }else{
+        if(input$HarvestType == "Subsistence"){
+          data.har<-  data.har %>% filter(Project_Type == "Subsistence")
+            }else{
+              data.har
+            }
+          }
+        }
+      
+          if(input$Region == "Yukon (US)"){
+      data.har <- data.har %>% filter(Region == "Yukon (US)")
+    }else{
+      if(input$Region == "Yukon (CA)"){
+        data.har<-  data.har %>% filter(Region == "Yukon - Canada")
+      }else{
+        if(input$Region == "Kuskokwim"){
+          data.har<-  data.har %>% filter(Region == "Kuskokwim")
+        }else{
+          if(input$Region == "Kotzebue"){
+            data.har<-  data.har %>% filter(Region == "Kotzebue")
+          }else{
+            if(input$Region == "Norton Sound"){
+              data.har<-  data.har %>% filter(Region == "Norton Sound")
+            }else{
+              data.har
+            }
+          }
+        }
+      }
+    }
+      
+    
+    })
+    
+     output$my_datatable <- renderDT({
+    
+    filtered_data() %>% 
+       datatable( rownames = FALSE,  class = "display", fillContainer = T, 
+                  options = list( scrollX = TRUE, 
+                                 paging = FALSE))
+  })
+})
+    
+    
+
+```
+

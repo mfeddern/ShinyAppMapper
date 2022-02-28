@@ -1,184 +1,60 @@
-data <- read.csv(file = 'DataInventory.csv')
-
+data1<- read.csv(file = 'ADFGDataSummary.csv')   #aerial survey and escapement dataset
+data2<- read.csv(file = 'ADFG_ASL.csv')         # ASL data set
+data <- left_join(data1, data2[,3:10], by = "Location", all= FALSE)%>% #merging dataset
+          filter_at(vars(First_Year,Last_Year),all_vars(!is.na(.)))   # only keeping ASL data that has accompanying survey data
 
 server = function(session, input, output) {
 #Creating a reactive dataset that can be filtered by the slider and the radio buttons from the ui  
   filtered_data <- reactive({ 
-      data %>%
-        filter(yrs_data >= input$n_years)
+  
 
-    #assigning the correct filtering for age data  
-       if(input$ASL == "Yes"){
-          data <- data %>% filter(asl == "Yes")
+   
+   #assigning the correct filtering for management area 
+   if(input$Management_Area == "Yukon (US)"){
+     data <- data %>% filter(Management_Area == "Yukon")
+   }else{
+     if(input$Management_Area == "Yukon (CA)"){
+       data<-  data %>% filter(Management_Area == "Yukon - Canada")
+     }else{
+       if(input$Management_Area == "Kuskokwim"){
+         data<-  data %>% filter(Management_Area == "Kuskokwim")
+       }else{
+         if(input$Management_Area == "Kotzebue"){
+           data<-  data %>% filter(Management_Area == "Kotzebue")
+         }else{
+           if(input$Management_Area == "Norton Sound"){
+             data<-  data %>% filter(Management_Area == "Norton Sound/Port Clarence")
+             }else{
+               data
+             }
+           }
+         }
+       }
+     }
+   
+    #assigning the correct filtering for survey type  
+       if(input$Project_Type == "Escapement Counts"){
+          data <- data %>% filter(Project_Type == "Escapement")
         }else{
-          if(input$ASL == "No"){
-           data<-  data %>% filter(asl == "No")
+          if(input$Project_Type == "Aerial Survey"){
+           data<-  data %>% filter(Project_Type == "Aerial Survey")
           }else{
             data
           }
         }
+})
   
-
-    #assinging correct data filtering for the productivity      
-     if(input$Productivity == "Yes"){
-       data <- data %>% filter(productivity == "Yes")
-      }else{
-        if(input$Productivity == "No"){
-          data <- data %>% filter(Productivity == "No")
-        }else{
-          data
-        }
-      }
-    
-    
-    ## If statements to properly select data type using check boxes
-    if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == TRUE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-      data %>% filter(Aerial == "Yes" & Weir == "Yes"& Sonar == "Yes"& Genetic == "Yes"& Tower == "Yes")
-    }else{
-    if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == TRUE& input$Genetic.check == TRUE & input$Tower.check == FALSE){
-      data %>% filter(Aerial == "Yes" & Weir == "Yes"& Sonar == "Yes"& Genetic == "Yes")
-    }else{
-      if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == TRUE & input$Genetic.check == FALSE& input$Tower.check == FALSE){
-        data %>% filter(Aerial == "Yes" & Weir == "Yes"& Sonar == "Yes")
-      }else{
-        if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Genetic.check == TRUE & input$Sonar.check == FALSE& input$Tower.check == FALSE){
-          data %>% filter(Aerial == "Yes" & Weir == "Yes"& Genetic == "Yes")
-        }else{
-          if(input$Aerial.check == TRUE & input$Sonar.check == TRUE & input$Genetic.check == TRUE& input$Weir.check == FALSE& input$Tower.check == FALSE){
-            data %>% filter(Aerial == "Yes" & Sonar == "Yes"& Genetic == "Yes")
-          }else{
-            if(input$Weir.check == FALSE & input$Aerial.check == FALSE& input$Genetic.check == TRUE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-              data %>% filter(Genetic == "Yes")
-            }else{     
-              if(input$Weir.check == FALSE & input$Aerial.check == FALSE& input$Genetic.check == FALSE& input$Sonar.check == TRUE& input$Tower.check == FALSE){
-                data %>% filter(Sonar == "Yes")
-              }else{ 
-                if(input$Weir.check == TRUE & input$Aerial.check == FALSE& input$Genetic.check == TRUE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-                  data %>% filter(Weir == "Yes"&Genetic=="Yes")
-                }else{  
-                  if(input$Weir.check == TRUE & input$Aerial.check == FALSE& input$Genetic.check == FALSE& input$Sonar.check == TRUE& input$Tower.check == FALSE){
-                    data %>% filter(Weir == "Yes"&Sonar=="Yes")
-                  }else{
-                    if(input$Weir.check == FALSE & input$Aerial.check == TRUE& input$Genetic.check == FALSE& input$Sonar.check == TRUE& input$Tower.check == FALSE){
-                      data %>% filter(Aerial == "Yes"&Sonar=="Yes")
-                    }else{
-                      if(input$Weir.check == FALSE & input$Aerial.check == TRUE& input$Genetic.check == TRUE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-                        data %>% filter(Aerial == "Yes"&Genetic=="Yes")
-                      }else{
-                        if(input$Weir.check == FALSE & input$Aerial.check == FALSE& input$Genetic.check == TRUE& input$Sonar.check == TRUE& input$Tower.check == FALSE){
-                          data %>% filter(Sonar == "Yes"&Genetic=="Yes")
-                        }else{
-            
-     if(input$Aerial.check == TRUE & input$Weir.check == TRUE& input$Genetic.check == FALSE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-        data %>% filter(Aerial == "Yes" & Weir == "Yes")
-        }else{
-          if(input$Aerial.check == TRUE & input$Weir.check == FALSE& input$Genetic.check == FALSE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-          data %>% filter(Aerial == "Yes")
-       }else{
-         if(input$Weir.check == TRUE & input$Aerial.check == FALSE& input$Genetic.check == FALSE& input$Sonar.check == FALSE& input$Tower.check == FALSE){
-        data %>% filter(Weir == "Yes")
-      }else{
-        #here we are adding all of the tower true optuions
-        if(input$Aerial.check == FALSE & input$Weir.check == TRUE & input$Sonar.check == TRUE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-          data %>% filter( Weir == "Yes"& Sonar == "Yes"& Genetic == "Yes"& Tower == "Yes")
-        }else{ 
-          if(input$Aerial.check == TRUE & input$Weir.check == FALSE & input$Sonar.check == TRUE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-          data %>% filter(Aerial == "Yes"& Sonar == "Yes"& Genetic == "Yes"& Tower == "Yes")
-        }else{
-          if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == FALSE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-            data %>% filter(Aerial == "Yes" & Weir == "Yes"& Genetic == "Yes"& Tower == "Yes")
-          }else{
-            if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == TRUE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-              data %>% filter(Aerial == "Yes" & Weir == "Yes"& Sonar == "Yes"& Tower == "Yes")
-            }else{
-              
-              if(input$Aerial.check == FALSE & input$Weir.check == FALSE & input$Sonar.check == TRUE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-                data %>% filter( Sonar == "Yes"& Genetic == "Yes"& Tower == "Yes")
-              }else{
-                if(input$Aerial.check == FALSE & input$Weir.check == TRUE & input$Sonar.check == FALSE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-                  data %>% filter(Weir == "Yes"& Genetic == "Yes"& Tower == "Yes")
-                }else{
-                  if(input$Aerial.check == FALSE & input$Weir.check == TRUE & input$Sonar.check == TRUE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                    data %>% filter(Weir == "Yes"& Sonar == "Yes"& Tower == "Yes")
-                  }else{
-                    if(input$Aerial.check == TRUE & input$Weir.check == FALSE & input$Sonar.check == FALSE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-                      data %>% filter(Aerial == "Yes" & Genetic == "Yes"& Tower == "Yes")
-                    }else{
-                      if(input$Aerial.check == TRUE & input$Weir.check == FALSE & input$Sonar.check == TRUE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                        data %>% filter(Aerial == "Yes" & Sonar == "Yes"&  Tower == "Yes")
-                      }else{
-                        if(input$Aerial.check == TRUE & input$Weir.check == TRUE & input$Sonar.check == FALSE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                          data %>% filter(Aerial == "Yes" & Weir == "Yes"& Tower == "Yes")
-                        }else{
-                          
-                          if(input$Aerial.check == FALSE & input$Weir.check == FALSE & input$Sonar.check == FALSE& input$Genetic.check == TRUE & input$Tower.check == TRUE){
-                            data %>% filter( Genetic == "Yes"& Tower == "Yes")
-                          }else{
-                            if(input$Aerial.check == FALSE & input$Weir.check == TRUE & input$Sonar.check == FALSE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                              data %>% filter(Weir == "Yes"&  Tower == "Yes")
-                            }else{
-                              if(input$Aerial.check == FALSE & input$Weir.check == FALSE & input$Sonar.check == TRUE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                                data %>% filter( Sonar == "Yes"&  Tower == "Yes")
-                              }else{
-                                if(input$Aerial.check == TRUE & input$Weir.check == FALSE & input$Sonar.check == FALSE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                                  data %>% filter(Aerial == "Yes" & Tower == "Yes")
-                                }else{
-                                  if(input$Aerial.check == FALSE & input$Weir.check == FALSE & input$Sonar.check == FALSE& input$Genetic.check == FALSE & input$Tower.check == TRUE){
-                                    data %>% filter( Tower == "Yes")
-                                  }else{
-        
-          data 
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        }
-      
-                     }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-              }
-            }
-          }
-        }
-      }
-    }
-    }
-  })
 
   #creating the output data table that will be filtered by the slider and the buttons  
   output$my_datatable <- renderDT({
-  
-    names<- c("Region", "River", "Name", "Productivity Index", "Age Data",
-              "Years Escapement",  "Data Type",
-              "Longitude", "Latitiude", "Location Notes", "First Brood", "Last Brood", "References",
-              "Harvest", "Weir", "Aerial", "Genetic", "Sonar", "Years of Age")
     
     filtered_data() %>% 
        datatable( rownames = FALSE,  class = "display", fillContainer = T, 
                   options = list( scrollX = TRUE, 
                                  paging = FALSE))
-    
-   
-                
   })
   
-  
+  pal <- colorFactor(c("navy", "red"), domain = c("Escapement", "Aerial Survey"))  
   # base map that we will add points to with leafletProxy(), using a proxy means the map does not need to be redrawn
   output$my_leaflet <- renderLeaflet({
     
@@ -203,48 +79,44 @@ server = function(session, input, output) {
   observeEvent(input$my_datatable_rows_selected, {
     
     selected_lats <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$lat[c(unique(input$my_datatable_rows_selected))])
+      as.list(filtered_data()$Latitude[c(unique(input$my_datatable_rows_selected))])
     })
     
     selected_longs <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$long[c(unique(input$my_datatable_rows_selected))])
+      as.list(filtered_data()$Longitude[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_productivity <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$productivity[c(unique(input$my_datatable_rows_selected))])
+    selected_location <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Location[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_asl <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$asl[c(unique(input$my_datatable_rows_selected))])
+    selected_management <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Management_Area[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_region <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$region[c(unique(input$my_datatable_rows_selected))])
+    selected_type <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Project_Type[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_yrs_data <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$yrs_data[c(unique(input$my_datatable_rows_selected))])
+    selected_avg <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Avg_Count[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_datatype <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$Data.Type[c(unique(input$my_datatable_rows_selected))])
+    selected_nyears <- eventReactive(input$my_datatable_rows_selected, {
+      as.list(filtered_data()$Number_of_Years[c(unique(input$my_datatable_rows_selected))])
     })
     
-    selected_productivity_index <- eventReactive(input$my_datatable_rows_selected, {
-      as.list(filtered_data()$productivity_index[c(unique(input$my_datatable_rows_selected))])
-    })
     
     # this is the data that will be passed to the leaflet in the addCircleMarkers argument,
     # as well as the popups when the points are hovered over
     map_df <- reactive({
       tibble(lat = unlist(selected_lats()),
              lng = unlist(selected_longs()),
-             asl = unlist(selected_asl()),
-             yrs_data = unlist(selected_yrs_data()),
-             datatype = unlist(selected_datatype()),
-             region = unlist(selected_region()),
-             productivity = unlist(selected_productivity()),
-             productivity_index = unlist(selected_productivity_index()))
+             location = unlist(selected_location()),
+             management = unlist(selected_management()),
+             nyears = unlist(selected_nyears()),
+             average = unlist(selected_avg()),
+             type = unlist(selected_type()))
     })
     leafletProxy("my_leaflet", session) %>% 
       clearMarkers() %>% 
@@ -252,18 +124,16 @@ server = function(session, input, output) {
         data = map_df(),
         lng = ~lng,
         lat = ~lat,
-        fillColor = 'blue',
         stroke = TRUE,
-        color = "white",
-        radius = 6,
-        weight = 1,
+        color = ~pal(type),
+        radius = 1,
+        weight = ~nyears/2,
         fillOpacity = 0.4,
-        popup = paste0("Name: ", map_df()$productivity_index, "<br>",
-                       "Region: ", map_df()$region, "<br>",
-                       "Data Type: ", map_df()$datatype, "<br>",
-                       "Productivity Data: ", map_df()$productivity, "<br>",
-                       "Age Data: ", map_df()$asl, "<br>",
-                       "# Years of Escapement Data: ", map_df()$yrs_data)
+        popup = paste0("Name: ", map_df()$location, "<br>",
+                       "Region: ", map_df()$management, "<br>",
+                       "Data Type: ", map_df()$type, "<br>",
+                       "Average Return: ", map_df()$average, "<br>",
+                       "# Years of Escapement Data: ", map_df()$nyears)
                        
       )
     
