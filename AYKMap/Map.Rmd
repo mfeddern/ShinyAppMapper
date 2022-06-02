@@ -52,6 +52,10 @@ Query data based on 1) Management Area, 2) Survey type, 3) number of years of re
 
 Detailed graphs of the overlap between ASL and return counts from escapement surveys can be viewed in the 'Dataset Overlap' tab.  
 
+**Map colors** correspond to survey type, either 'escpement' (red) or 'aerial survey' (navy)
+
+**Point size** corresponds to the number of years of data observations
+
 ```{r, echo=FALSE}
 shinyApp(
 ui = fluidPage(theme = shinytheme("flatly"),
